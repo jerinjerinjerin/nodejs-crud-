@@ -17,4 +17,5 @@ export interface IUser {
   avatarUrl?: string;
   role?: string;
   otpNumber?: number;
+  isValidUser?: boolean;
 }

@@ -43,19 +43,66 @@ export const createUserService = async (user: IUser) => {
 
     await newUser.save();
 
-    // Send the OTP email
-    await sendOtpEmail(user.email, otpNumber.toString(), 10); // 10 minutes validity
-    console.log('OTP email sent successfully');
+    await sendOtpEmail(user.email, otpNumber.toString(), 10);
 
     return newUser;
   } catch (error) {
-    // Don't rethrow, just return the error to the middleware
     console.error('Error during user creation:', error);
     if (error instanceof CustomError) {
-      throw error; // Propagate the custom error
+      throw error;
     }
 
-    // For any unexpected error
     throw new CustomError('An unexpected error occurred', 500);
+  }
+};
+
+export const verifyOtpService = async (user: IUser) => {
+  try {
+    const validOtp = await User.findOne({ otpNumber: user.otpNumber });
+
+    if (!validOtp) {
+      throw new CustomError('invalid otp number');
+    }
+
+    if (validOtp) {
+      await User.findByIdAndUpdate(
+        validOtp._id,
+        { isValidUser: true },
+        { new: true },
+      );
+    }
+
+    return validOtp;
+  } catch (error) {
+    console.error('error verifying Otp', error);
+    throw new CustomError('An error occurred while verifying OTP', 500);
+  }
+};
+
+export const loginServic = async (user: IUser) => {
+  try {
+    const validEmail = await User.findOne({ email: user.email });
+
+    if (!validEmail) {
+      throw new CustomError('User not found', 400);
+    }
+
+    // Check if the user is valid (has verified OTP)
+    if (validEmail.isValidUser !== true) {
+      throw new CustomError('User is not verified (OTP)', 401);
+    }
+
+    const validPasssword = await bcrypt.compare(
+      user.password,
+      validEmail.password,
+    );
+
+    if (!validPasssword) {
+      throw new CustomError('incorrect password', 400);
+    }
+
+    return validEmail;
+  } catch (error) {
+    console.error(error);
   }
 };
