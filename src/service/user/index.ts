@@ -8,7 +8,7 @@ export const createUserService = async (user: IUser) => {
     const alreadyUser = await User.findOne({ email: user.email });
 
     if (alreadyUser) {
-      throw new CustomError('User already exists', 409); // Directly throw the error
+      throw new CustomError('User already exists', 409);
     }
 
     if (user.email === process.env.ADMIN_EMAIL) {
