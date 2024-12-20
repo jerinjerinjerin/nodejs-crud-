@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import { IUser } from '../../data/data';
 import User from '../../schema/user';
 import { CustomError } from '../../utils/error/CustomError';
+import { generateOtp } from '../../utils/auth/otp';
+import { sendOtpEmail } from '../../utils/email/email';
 
 export const createUserService = async (user: IUser) => {
   try {
@@ -31,12 +33,19 @@ export const createUserService = async (user: IUser) => {
 
     const hashPassword = await bcrypt.hash(user.password, 10);
 
+    const otpNumber = generateOtp();
+
     const newUser = new User({
       ...user,
+      otpNumber,
       password: hashPassword,
     });
 
     await newUser.save();
+
+    // Send the OTP email
+    await sendOtpEmail(user.email, otpNumber.toString(), 10); // 10 minutes validity
+    console.log('OTP email sent successfully');
 
     return newUser;
   } catch (error) {

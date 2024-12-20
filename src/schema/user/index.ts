@@ -21,6 +21,8 @@ const userSchema = new Schema<userDocument>({
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4mYGiDHOtUVcSxuzNfeds4xWXNOpQ-lIMPA&s',
   },
   role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
+  otpNumber: { type: Number, required: true },
+  isValidUser: { type: Boolean, default: false },
 });
 const User = mongoose.model('User', userSchema);
 

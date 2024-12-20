@@ -21,11 +21,10 @@ export const createUser = async (
 
     const userWithoutPassword = _.omit(newUser.toObject(), ['password']);
 
-    const payload = { email: user.email }; // Define the payload for JWT
+    const payload = { email: user.email };
+    const token = generateToken(payload);
 
-    const token = generateToken(payload); // Generate JWT token
-
-    setAuthCookie({ token, res }); // Set the token as an HttpOnly cookie
+    setAuthCookie({ token, res });
 
     res.status(201).json({
       success: true,
@@ -35,6 +34,6 @@ export const createUser = async (
     });
   } catch (error) {
     console.error(error);
-    next(error); // Pass the error to the global error handler
+    next(error);
   }
 };
