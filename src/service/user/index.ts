@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { IUser } from '../../data/data';
 import User from '../../schema/user';
-import { CustomError } from '../../utils/CustomError';
+import { CustomError } from '../../utils/error/CustomError';
 
 export const createUserService = async (user: IUser) => {
   try {
