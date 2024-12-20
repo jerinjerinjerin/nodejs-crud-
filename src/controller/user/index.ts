@@ -103,3 +103,26 @@ export const loginUser = async (
     next(error);
   }
 };
+
+export const logOutUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    res.clearCookie('auth_token', {
+      httpOnly: true, // This ensures the cookie is only accessible through HTTP requests, not JavaScript
+      secure: process.env.NODE_ENV === 'production', // Use 'secure' flag in production (HTTPS)
+      sameSite: 'strict', // Helps prevent CSRF attacks
+    });
+
+    // Send response to client
+    res.status(200).json({
+      success: true,
+      message: 'User logged out successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
