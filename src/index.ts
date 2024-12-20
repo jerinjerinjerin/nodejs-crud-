@@ -1,17 +1,22 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import connectDb from './config/connectDb';
+import userRouets from './route/user';
+import { errorHandler } from './utils/ErrorHandler';
 
 dotenv.config();
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use(errorHandler);
+
 // src/index.ts
 
 export const port: string | number = process.env.PORT || 3000;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send({ message: 'Hello, World!' });
-});
+app.use('/api/user', userRouets);
 
 connectDb();
 
