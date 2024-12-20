@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CustomError } from './CustomError';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (
   err: unknown,
   _req: Request,
