@@ -5,15 +5,11 @@ interface CookieOptions {
   res: Response;
 }
 
-const expire_time = process.env.JWT_EXPIRATION;
-
 export const setAuthCookie = ({ token, res }: CookieOptions): void => {
-  const maxAge = expire_time ? parseInt(expire_time) * 1000 : 0;
-
   res.cookie('authToken', token, {
-    maxAge: maxAge,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'strict',
+    sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
   });
 };

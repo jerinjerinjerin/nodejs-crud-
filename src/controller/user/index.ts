@@ -64,7 +64,7 @@ export const verifyOtp = async (
     res.status(200).json({
       success: true,
       message: 'otp verification success',
-      otpNumber: verifyonOtp,
+      data: verifyonOtp,
     });
   } catch (error) {
     console.error(error);
@@ -110,10 +110,10 @@ export const logOutUser = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    res.clearCookie('auth_token', {
-      httpOnly: true, // This ensures the cookie is only accessible through HTTP requests, not JavaScript
-      secure: process.env.NODE_ENV === 'production', // Use 'secure' flag in production (HTTPS)
-      sameSite: 'strict', // Helps prevent CSRF attacks
+    res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
     });
 
     // Send response to client
